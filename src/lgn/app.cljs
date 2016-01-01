@@ -10,17 +10,16 @@
 
 (declare refresh)
 
-(defonce *persons (r/atom []))
-(defonce *pick (r/atom {})) ;pick map of id to [name correct?]
-(defonce *selected-name (r/atom nil)) ;[id name]
-(defonce *result (r/atom nil)) ;[total correct description]
+(defonce *champs (r/atom [])) ;{:id id:String :name:String :names:[String]}
+(defonce *pick (r/atom {})) ;map<id:String -> [name:String correct?:Boolean]>
+(defonce *selected-name (r/atom nil)) ;[id:String name:String]
+(defonce *result (r/atom nil)) ;[total:Int correct:Int description:String]
 
 
 (add-watch *pick :results
   (fn [key atom old new]
-    (if (= (count @*persons) (count new))
+    (if (= (count @*champs) (count new))
       (let [data (map (fn [[id [name _]]] [id name]) new)]
-        (println data)
         (go (let [response (<! (http/post (str "http://" js/location.host "/get-result") {:body (u/to-json data)}))]
           (reset! *result (u/from-json (:body response)))))))))
 
@@ -40,17 +39,16 @@
       (= correct-name name) "name right_answer"
       :else "name incorrect")))
 
-(defn person-view [person]
-  [:div.person
-   [:div.photo [:img {:src (str "/champs/" (:id person) ".png")}]]
-   (doall (for [name (:names person)]
-     ^{:key (str "name_" (:id person) name)} [:span {
-                                                      :class (calc-span-class (:id person) (:name person) name)
-                                                      :on-click #(on-click-name (:id person) (:name person) name)
-                                                      :on-mouse-over #(mouse-over true (:id person) name)
-                                                      :on-mouse-out #(mouse-over false (:id person) name)
-                                                      } name]))
-   ])
+(defn champ-view [champ]
+  (let [id (:id champ) correct-name (:name champ)]
+    [:div.champ
+      [:div.photo [:img {:src (str "/champs/" id ".png")}]]
+        (doall (for [name (:names champ)]
+          ^{:key (str "name_" id name)} [:span {:class (calc-span-class id correct-name name)
+                                                :on-click #(on-click-name id correct-name name)
+                                                :on-mouse-over #(mouse-over true id name)
+                                                :on-mouse-out #(mouse-over false id name)}
+                                         name]))]))
 
 (defn results-view []
   (if-let [result @*result]
@@ -65,14 +63,14 @@
   [:div.outer
    [:div.inner
     [:div.header [:h1 "Guess champion name"]]
-    (for [person @*persons] ^{:key (str "person_" (:id person))} [person-view person])
+    (for [champ @*champs] ^{:key (str "champ_" (:id champ))} [champ-view champ])
     [results-view]
    ]])
 
 (defn start-page [mount]
   (go (let [response (<! (http/get (str "http://" js/location.host "/start-test")))]
         (let [data (u/from-json (:body response))]
-          (reset! *persons (take 10 data))
+          (reset! *champs data)
           (reset! *pick {})
           (reset! *result nil)
           (reset! *selected-name nil)

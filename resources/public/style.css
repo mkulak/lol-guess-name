@@ -17,7 +17,6 @@ span.incorrect {
 }
 span.right_answer {
     border: 1px solid #4fdb44;
-    /*background-color: #4fdb44;*/
 }
 span.selected {
     background-color: white;
@@ -34,7 +33,7 @@ span.again {
     cursor: pointer;
 }
 
-div.person {
+div.champ {
     border: 1px solid #b58900;
     width: 265px;
     margin-top: 10px;
@@ -48,7 +47,7 @@ div.person {
 div.photo {
     float: left;
     margin-right: 10px;
-    padding-top: 5px;
+    padding-top: 8px;
 }
 
 div.inner {
@@ -62,14 +61,13 @@ div.outer {
     margin: auto;
     width: 800px;
     background-color: #fdf6e3;
-    /*padding-top: 10px;*/
     padding-bottom: 20px;
     margin-top: 30px;
-    border-radius: 15px 15px 0px 0px;
+    border-radius: 15px 15px 0 0;
 }
 
 div.results {
-    padding: 20px 0px 20px 0px;
+    padding: 20px 0 20px 0;
     font-size: 20px;
     width: 400px;
     margin: auto;
@@ -85,12 +83,10 @@ span.results {
 body {
     font-family: "Open Sans", Arial, sans-serif;
     color: #111;
-    /*background-color: #232323*/
-    /*background-color: #ecd9a6;*/
     background-color: #35363a;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    background-image: url("/pics/bg3.jpg");
+    margin-top: 0;
+    margin-bottom: 0;
+    background-image: url("/pics/bg.jpg");
     background-repeat: repeat-x;
 }
 
@@ -105,23 +101,4 @@ h1 {
     font-weight: bold;
     margin-top: 10px;
     margin-bottom: 5px;
-}
-
-.example {
-    base03:    #002b36;
-    base02:    #073642;
-    base01:    #586e75;
-    base00:    #657b83;
-    base0:     #839496;
-    base1:     #93a1a1;
-    base2:     #eee8d5;
-    base3:     #fdf6e3;
-    yellow:    #b58900;
-    orange:    #cb4b16;
-    red:       #dc322f;
-    magenta:   #d33682;
-    violet:    #6c71c4;
-    blue:      #268bd2;
-    cyan:      #2aa198;
-    green:     #859900;
 }

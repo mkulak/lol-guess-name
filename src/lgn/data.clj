@@ -1,4 +1,4 @@
-(ns lgn.logic)
+(ns lgn.data)
 
 (def champs {
               "4cf2896" {:id "4cf2896", :name "Teemo", :gender :male}
@@ -145,17 +145,3 @@
                    "Cheat0r!" ;10
                    ])
 
-(def sample-size 10)
-
-(defn get-result [answers] ;list of [id name]
-  (let [correct (count (filter (fn [[id name]] (= name (:name (champs id)))) answers))
-        correct-percent (quot (* correct 10) sample-size)]
-    (println answers)
-    [sample-size correct (result-desc correct-percent)]))
-
-(defn get-random-names-except [gender name n]
-  (take n (shuffle (seq (into #{} (map :name (filter #(and (= gender (:gender %)) (not= name (:name %))) (vals champs))))))))
-
-
-(defn new-sample []
-  (map #(assoc % :names (shuffle (conj (get-random-names-except (:gender %) (:name %) 3) (:name %)))) (take sample-size (shuffle (vals champs)))))
