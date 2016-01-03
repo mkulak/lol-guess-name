@@ -1,12 +1,12 @@
 (ns lgn.server
   (:use
-    [compojure.core     :only [defroutes GET POST]])
+    [compojure.core     :only [defroutes GET POST routes]])
   (:require
     [lgn.util           :as u]
     [lgn.data           :as d]
     [compojure.route    :as route]
-    [org.httpkit.server :as httpkit]
     [ring.util.response :as response]
+    [compojure.handler  :as handler]
     )
   (:gen-class))
 
@@ -25,18 +25,14 @@
 (defn new-sample []
   (map #(assoc % :names (shuffle (conj (get-random-names-except (:gender %) (:name %) 3) (:name %)))) (take sample-size (shuffle (vals d/champs)))))
 
-(defroutes routes
+(defroutes app-routes
   (GET "/" [] (response/resource-response "public/index.html"))
 
   (GET "/start-test" [] (u/to-json (new-sample)))
 
-  (POST "/get-result" {body :body} (u/to-json (get-result (u/from-json (slurp body)))))
+  (POST "/get-result" [result] (u/to-json (get-result (u/from-json result))))
 
   (route/resources "/" {:root "public"}))
 
-(defn -main [& {:as args}]
-  (let [port (or (get args "--port") "8080")]
-    (println "Starting server at port" port)
-    (httpkit/run-server #'routes {:port (Long/parseLong port)})))
 
-
+(def app (handler/site (routes app-routes)))

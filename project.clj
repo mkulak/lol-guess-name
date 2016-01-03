@@ -3,13 +3,13 @@
     [org.clojure/clojure        "1.7.0"]
     [org.clojure/clojurescript  "1.7.189"]
     [org.clojure/core.async     "0.2.374"]
-    [http-kit                   "2.1.19"]
     [compojure                  "1.4.0" :exclusions [commos-codec]]
     [com.cognitect/transit-clj  "0.8.285"]
     [com.cognitect/transit-cljs "0.8.232"]
     [com.lucasbradstreet/instaparse-cljs "1.4.1.0"]
     [cljs-http "0.1.39"]
     [reagent "0.6.0-alpha"]
+    [ring-server "0.3.1"]
   ]
 
   :clean-targets ^{:protect false} ["resources/public/js" "target"]
@@ -17,15 +17,18 @@
   :plugins [
     [lein-cljsbuild       "1.1.1"]
     [tonsky/lein-figwheel "0.5.0-4"]
+    [lein-ring "0.8.10"]
   ]
 
-  :aliases      { "package"   ["do" "cljsbuild" "once" "advanced," "uberjar"]
-                  "build-run" ["do" "cljsbuild" "once," "run"]}
+  :aliases      {
+                  "package"   ["do" "cljsbuild" "once" "advanced," "ring", "uberwar"]
+                  "build-run" ["do" "cljsbuild" "once," "ring", "server"]}
 
   :aot [lgn.server ]
   :uberjar-name "lol-guess-name.jar"
   :uberjar-exclusions [#"public/js/out"]
 
+  :ring {:handler lgn.server/app}
 
   :main         lgn.server
   :figwheel     { :ring-handler  "lgn.server/app"
@@ -56,3 +59,5 @@
                         :pseudo-names   false } }
   ]}
 )
+
+

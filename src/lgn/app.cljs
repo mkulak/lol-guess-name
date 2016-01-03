@@ -20,7 +20,7 @@
   (fn [key atom old new]
     (if (= (count @*champs) (count new))
       (let [data (map (fn [[id [name _]]] [id name]) new)]
-        (go (let [response (<! (http/post (str "http://" js/location.host "/get-result") {:body (u/to-json data)}))]
+        (go (let [response (<! (http/post (str "http://" js/location.host "/get-result") {:form-params {:result (u/to-json data)}}))]
           (reset! *result (u/from-json (:body response)))))))))
 
 (defn mouse-over [over id name]
